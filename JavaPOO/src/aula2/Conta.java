@@ -1,15 +1,16 @@
 package aula2;
 import java.sql.Date;
 
-public class Conta {
+public abstract class Conta {
 
-	private int numeroconta, agencia;
-	private Date dataconta;
-	private double saldo;
-	private String senhaconta;
-	private Cliente cliente;
+	protected long numeroconta;
+	protected int agencia;
+	protected Date dataconta;
+	protected double saldo;
+	protected String senhaconta;
+	protected Cliente cliente;
 	
-	public Conta(int numeroconta, int agencia, String senhaconta, Cliente cliente) {
+	public Conta(long numeroconta, int agencia, String senhaconta, Cliente cliente) {
 		this.numeroconta = numeroconta;
 		this.agencia = agencia;
 		this.dataconta = new Date (System.currentTimeMillis());
@@ -22,13 +23,13 @@ public class Conta {
 	
 	
 	
-	public int getNumeroconta() {
+	public long getNumeroconta() {
 		return numeroconta;
 	}
 
 
 
-	public void setNumeroconta(int numeroconta) {
+	public void setNumeroconta(long numeroconta) {
 		this.numeroconta = numeroconta;
 	}
 
@@ -94,30 +95,49 @@ public class Conta {
 
 
 
-	public boolean Saque (double valor) {
-		if (this.saldo >= valor) {
-			this.saldo -= valor;
+	public boolean sacar(double valor) {
+//		if (this.saldo >= valor) {
+//			this.saldo -= valor;
+//			return true;
+		if (valor > 0) { // nao pode sacar 0 reais
+			if (this.saldo >= valor) {
+				this.saldo -= valor;
+				return true;
+			}
 		}
-		return true;
-		
-	}
+		return false;
+		}
 	
-	public void Depositar (double valor) {
+	public void depositar(double valor) {
 		this.saldo += valor;
-	}
-	
-	public void Transferir(Conta conta, double valor) {
-		
-		boolean teste = this.Saque (valor);
-		if (teste == true) {
-		conta.Depositar(valor);
+		if (valor > 0) {
+			this.saldo += valor;
 		}
 	}
-	
-	public void Consultar_Saldo () {
-		System.out.println("Nome do titular da conta: "  + cliente.getNometitular() + "\nSaldo da conta: " + this.saldo );
+
+	public void transferir(Conta conta, double valor) {
+		boolean teste = this.sacar(valor);
+
+		if (teste == true) { // verificar se tem dinheiro na conta
+			this.sacar(valor);
+		if (valor > 0) {
+			if (teste == true) { // verificar se tem dinheiro na conta
+				this.sacar(valor);
+			}
+		}
+
+		conta.depositar(valor);
+		}
 	}
+
+	public void exibirSaldo() {
+		System.out.println("Cliente: " + this.cliente.getNometitular() + " - saldo: " + this.saldo);
+	}
+	public abstract void exibirSaldo2();
+
+
+}
 
 	
 	
-}
+	
